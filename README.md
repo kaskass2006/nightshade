@@ -113,15 +113,6 @@ Enter choice:
 
 ---
 
-## TODO / Future Plans
-
-- Polymorphic code generation for unique EXE signatures
-- More anti-EDR techniques (e.g., syscall obfuscation)
-- Support for encrypted C2 payloads
-- Linux/macOS loader generation
-- GUI for non-CLI operators
-
----
 
 ## License
 
